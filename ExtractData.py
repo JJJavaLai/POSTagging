@@ -7,6 +7,7 @@ import pickle
 import os
 
 
+# read files word by word
 def read_file_in_word(start, stop):
     documents = []
     tokens = []
@@ -28,6 +29,7 @@ def read_file_in_word(start, stop):
     return dataset
 
 
+# read files sentence by sentence with punctuations
 def read_file_in_sentence(start, stop):
     sentences = []
     tokens = []
@@ -61,7 +63,7 @@ def read_file_in_sentence(start, stop):
     return dataset
 
 
-# read whole data
+# read all files into a total dataset
 
 whole_data_in_word = read_file_in_word(1, 199)
 whole_data_in_sentence_with_punctuation = read_file_in_sentence(1, 199)
@@ -78,6 +80,8 @@ word2int = {"train": {}, "validation": {}, "test": {}, "global": {}}
 int2word = {"train": {}, "validation": {}, "test": {}, "global": {}}
 token2int = {"train": {}, "validation": {}, "test": {}, "global": {}}
 int2token = {"train": {}, "validation": {}, "test": {}, "global": {}}
+sentence2int = {"train": [], "validation": [], "test": [], "global": []}
+tokens2int = {"train": [], "validation": [], "test": [], "global": []}
 
 for i, word in enumerate(total_words_set):
     word2int["global"][word] = i + 1
@@ -87,6 +91,23 @@ for i, word in enumerate(total_tokens_set):
     token2int["global"][word] = i + 1
     int2token["global"][i + 1] = word
 
+total_sentences = whole_data_in_sentence_with_punctuation["sentences"]
+total_sentences_tokens = whole_data_in_sentence_with_punctuation["tokens"]
+
+for sentence in total_sentences:
+    numrized_sentence = []
+    words = word2int["global"]
+    for word in sentence:
+        numrized_sentence.append(words[word])
+    sentence2int["global"].append(numrized_sentence)
+
+for setences_tokens in total_sentences_tokens:
+    numrized_tokens = []
+    tokens = token2int["global"]
+    for token in setences_tokens:
+        numrized_tokens.append(tokens[token])
+    tokens2int["global"].append(numrized_tokens)
+
 # read training, validation and test data
 train_data_in_word = read_file_in_word(1, 100)
 validation_data_in_word = read_file_in_word(101, 150)
@@ -94,8 +115,6 @@ test_data_in_word = read_file_in_word(151, 199)
 train_data_in_sentence_with_punctuation = read_file_in_sentence(1, 100)
 validation_data_in_sentence_with_punctuation = read_file_in_sentence(101, 150)
 test_data_in_sentence_with_punctuation = read_file_in_sentence(151, 199)
-
-
 
 train_tokens_in_word = train_data_in_word["token"]
 train_words = train_data_in_word["document"]
@@ -118,52 +137,49 @@ print("Total number of tokens in validation set: ", len(validation_tokens_set))
 print("Total number of words in test set: ", len(test_words_set))
 print("Total number of tokens in test set: ", len(test_tokens_set))
 
-
-
 for i, word in enumerate(train_words_set):
-    word2int["train"][word] = i + 1
-    int2word["train"][i + 1] = word
+    word2int["train"][word] = word2int["global"][word]
+    int2word["train"][i + 1] = int2word["global"][i + 1]
 
 for i, word in enumerate(train_tokens_set):
-    token2int["train"][word] = i + 1
-    int2token["train"][i + 1] = word
+    token2int["train"][word] = token2int["global"][word]
+    int2token["train"][i + 1] = int2token["global"][i + 1]
 
 for i, word in enumerate(validation_words_set):
-    word2int["validation"][word] = i + 1
-    int2word["validation"][i + 1] = word
+    word2int["validation"][word] = word2int["global"][word]
+    int2word["validation"][i + 1] = int2word["global"][i + 1]
 
 for i, token in enumerate(validation_tokens_set):
-    token2int["validation"][token] = i + 1
-    int2token["validation"][i + 1] = token
+    token2int["validation"][token] = token2int["global"][token]
+    int2token["validation"][i + 1] = int2token["global"][i + 1]
 
 for i, token in enumerate(test_words_set):
-    word2int["test"][token] = i + 1
-    int2word["test"][i + 1] = token
+    word2int["test"][token] = word2int["global"][token]
+    int2word["test"][i + 1] = int2word["global"][i + 1]
 
 for i, token in enumerate(test_tokens_set):
-    token2int["test"][token] = i + 1
-    int2token["test"][i + 1] = token
+    token2int["test"][token] = token2int["global"][token]
+    int2token["test"][i + 1] = int2token["global"][i + 1]
 
 # train_data_in_sentence_with_punctuation
 # validation_data_in_sentence_with_punctuation
 # test_data_in_sentence_with_punctuation
 
-sentence2int = {"train": [], "validation": [], "test": []}
-tokens2int = {"train": [], "validation": [], "test": []}
+
 
 train_sentences = train_data_in_sentence_with_punctuation["sentences"]
 train_sentences_tokens = train_data_in_sentence_with_punctuation["tokens"]
 
 for sentence in train_sentences:
     numrized_sentence = []
-    words = word2int["train"]
+    words = word2int["global"]
     for word in sentence:
         numrized_sentence.append(words[word])
     sentence2int["train"].append(numrized_sentence)
 
 for setences_tokens in train_sentences_tokens:
     numrized_tokens = []
-    tokens = token2int["train"]
+    tokens = token2int["global"]
     for token in setences_tokens:
         numrized_tokens.append(tokens[token])
     tokens2int["train"].append(numrized_tokens)
@@ -176,14 +192,14 @@ validation_sentences_tokens = validation_data_in_sentence_with_punctuation["toke
 
 for sentence in validation_sentences:
     numrized_sentence = []
-    words = word2int["validation"]
+    words = word2int["global"]
     for word in sentence:
         numrized_sentence.append(words[word])
     sentence2int["validation"].append(numrized_sentence)
 
 for setences_tokens in validation_sentences_tokens:
     numrized_tokens = []
-    tokens = token2int["validation"]
+    tokens = token2int["global"]
     for token in setences_tokens:
         numrized_tokens.append(tokens[token])
     tokens2int["validation"].append(numrized_tokens)
@@ -196,14 +212,14 @@ test_sentences_tokens = test_data_in_sentence_with_punctuation["tokens"]
 
 for sentence in test_sentences:
     numrized_sentence = []
-    words = word2int["test"]
+    words = word2int["global"]
     for word in sentence:
         numrized_sentence.append(words[word])
     sentence2int["test"].append(numrized_sentence)
 
 for setences_tokens in test_sentences_tokens:
     numrized_tokens = []
-    tokens = token2int["test"]
+    tokens = token2int["global"]
     for token in setences_tokens:
         numrized_tokens.append(tokens[token])
     tokens2int["test"].append(numrized_tokens)
@@ -228,8 +244,8 @@ validation_corpus = Corpus(word2int["validation"], int2word["validation"], token
                            int2token["validation"], sentence2int["validation"], tokens2int["validation"])
 test_corpus = Corpus(word2int["test"], int2word["test"], token2int["test"], int2token["test"], sentence2int["test"],
                      tokens2int["test"])
-total_corpus = Corpus(word2int["global"], int2word["global"], token2int["global"], int2token["global"], {},
-                      {})
+total_corpus = Corpus(word2int["global"], int2word["global"], token2int["global"], int2token["global"], sentence2int["global"],
+                      tokens2int["global"])
 
 if not os.path.exists('PickledData/'):
     print('MAKING DIRECTORY PickledData/ to save pickled glove file')
@@ -243,5 +259,8 @@ with open('PickledData/validation_data.pkl', 'wb') as f:
 
 with open('PickledData/test_data.pkl', 'wb') as f:
     pickle.dump(test_corpus, f)
+
+with open('PickledData/total_data.pkl', 'wb') as f:
+    pickle.dump(total_corpus, f)
 
 print(1)

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/POS Tagging.iml" filepath="$PROJECT_DIR$/.idea/POS Tagging.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../POStagger/.idea/POStagger.iml" filepath="$PROJECT_DIR$/../POStagger/.idea/POStagger.iml" />
     </modules>
   </component>
 </project>
