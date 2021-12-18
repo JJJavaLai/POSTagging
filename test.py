@@ -1,6 +1,7 @@
+import tensorflow as tf
+print('GPU',tf.test.is_gpu_available())
 
-import numpy as np
-a  =  np.array([1,2,3])
-b = np.array([4,5,6])
-a = np.vstack((a,b))
-print(b)
+
+
+
+

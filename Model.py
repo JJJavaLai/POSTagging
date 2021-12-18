@@ -111,7 +111,7 @@ print("model fitting - Bidirectional LSTM")
 model.fit(train_sentences_sample,
           train_tokens_sample,
           batch_size=BATCH_SIZE,
-          epochs=20,
+          epochs=500,
           validation_data=(validation_sentences_sample, validation_tokens_sample))
 
 if not os.path.exists('Models/'):
