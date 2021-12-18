@@ -5,8 +5,9 @@ from keras.layers import TimeDistributed
 from keras.layers import LSTM, GRU, Bidirectional, SimpleRNN, RNN
 from keras.models import Model
 from matplotlib import pyplot as plt
-
-
+from keras.utils.np_utils import to_categorical
+from sklearn.metrics import classification_report, f1_score, confusion_matrix, accuracy_score, recall_score
+import numpy as np
 class POSTaggingModel:
     def __init__(self, N_TOKENS, VOCABULARY_SIZE, EMBEDDING_SIZE, MAX_SEQ_LENGTH, train_X, train_Y,
                  validation_X, validation_Y, embedding_weights, batch_size, epoch):
@@ -30,7 +31,7 @@ class POSTaggingModel:
                                      output_dim=self.EMBEDDING_SIZE,
                                      input_length=self.MAX_SEQ_LENGTH,
                                      weights=[self.embedding_weights],
-                                     trainable=True
+                                     trainable=False
                                      ))
         self.model.add(Bidirectional(LSTM(64, return_sequences=True)))
         self.model.add(TimeDistributed(Dense(self.N_TOKENS, activation='softmax')))
@@ -47,7 +48,7 @@ class POSTaggingModel:
                                 output_dim=self.EMBEDDING_SIZE,
                                 input_length=self.MAX_SEQ_LENGTH,
                                 weights=[self.embedding_weights],
-                                trainable=True
+                                trainable=False
                                 ))
         gru_model.add(GRU(64, return_sequences=True))
         gru_model.add(TimeDistributed(Dense(self.N_TOKENS, activation='softmax')))
@@ -65,7 +66,7 @@ class POSTaggingModel:
                                  output_dim=self.EMBEDDING_SIZE,  # length of vector with which each word is represented
                                  input_length=self.MAX_SEQ_LENGTH,  # length of input sequence
                                  weights=[self.embedding_weights],  # word embedding matrix
-                                 trainable=True  # True - update embeddings_weight matrix
+                                 trainable=False  # True - update embeddings_weight matrix
                                  ))
         lstm_model.add(LSTM(64, return_sequences=True))
         lstm_model.add(TimeDistributed(Dense(self.N_TOKENS, activation='softmax')))
@@ -92,16 +93,29 @@ class POSTaggingModel:
         self.model.fit(self.train_X, self.train_Y,
                          batch_size=self.batch_size, epochs=self.epoch,
                          validation_data=(self.validation_X, self.validation_Y))
-        plt.plot(self.__model.history['acc'])
-        plt.plot(self.__model.history['val_acc'])
-        plt.title('model accuracy')
-        plt.ylabel('accuracy')
-        plt.xlabel('epoch')
-        plt.legend(['train', 'test'], loc="lower right")
-        plt.show()
+        # plt.plot(self.model.history('acc'))
+        # plt.plot(self.model.history('val_acc'))
+        # plt.title('model accuracy')
+        # plt.ylabel('accuracy')
+        # plt.xlabel('epoch')
+        # plt.legend(['train', 'test'], loc="lower right")
+        # plt.show()
 
     def evaluateModel(self, test_X, test_Y):
-        loss, accuracy = self.model.evaluate(test_X, test_Y, verbose=1)
+        y = to_categorical(test_Y)
+        loss, accuracy = self.model.evaluate(test_X, y, verbose=1)
         print("Loss: {0},\nAccuracy: {1}".format(loss, accuracy))
-
+        result = self.model.predict(test_X)
+        test_Y = np.ravel(test_Y)
+        predict_result = np.ravel(np.argmax(result, axis=2))
+        print("shape of result: ", result.shape)
+        print("shape of predict_result: ", predict_result.shape)
+        model_accuracy_score = accuracy_score(test_Y, predict_result)
+        print("The accuracy of model: ", model_accuracy_score)
+        model_f1_score = f1_score(test_Y, predict_result, labels=None, average='weighted', sample_weight=None)
+        print("The F1 score of model: ", model_f1_score)
+        model_recall_score = recall_score(test_Y, predict_result, labels=None, pos_label=1, average='weighted', sample_weight=None)
+        print("The recall score of model: ", model_recall_score)
+        print("Classification report of model:")
+        print(classification_report(test_Y, predict_result, target_names=None, sample_weight=None))
 

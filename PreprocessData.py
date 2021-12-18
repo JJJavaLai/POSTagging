@@ -18,7 +18,9 @@ def read_file_in_word(start, stop):
             if len(line) > 1:
                 # split line by " ", return a list of words, the first is document, second is token and third is feature
                 single_data = line.split()
-                documents.append(single_data[0])
+                if single_data[0] == "&":
+                    single_data[0] = ','
+                documents.append(single_data[0].lower())
                 tokens.append(single_data[1])
         # print("file closed, file name : ", file_name)
         f.close()
@@ -45,7 +47,9 @@ def read_file_in_sentence(start, stop):
             if len(line) > 1:
                 # split line by " ", return a list of words, the first is document, second is token and third is feature
                 single_data = line.split()
-                single_documents.append(single_data[0])
+                if single_data[0] == "&":
+                    single_data[0] = ','
+                single_documents.append(single_data[0].lower())
                 single_tokens.append(single_data[1])
             else:
                 sentences.append(single_documents)
@@ -84,6 +88,8 @@ print("Total number of tokens: ", len(total_tokens_set))
 # read file in train, validation and test datasets
 train_sentence = read_file_in_sentence(1, 100)
 train_words = set(read_file_in_word(1, 100)["word"])
+train_words_data = read_file_in_word(1, 100)["word"]
+train_tokens_data = read_file_in_word(1, 100)["token"]
 train_X = train_sentence["sentences"]
 train_Y = train_sentence["tokens"]
 
@@ -99,6 +105,9 @@ test_words = set(read_file_in_word(151, 199)["word"])
 test_X = test_sentence["sentences"]
 test_Y = test_sentence["tokens"]
 
+set_train = set(np.sum(train_Y))
+set_validation = set(np.sum(validation_Y))
+a = set_train.difference(set_validation)
 
 print("We have {} of train sentence.".format(len(train_X)))
 print("We have {} of validation sentence.".format(len(validation_X)))

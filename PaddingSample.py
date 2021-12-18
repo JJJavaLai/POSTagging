@@ -62,6 +62,7 @@ def tokenizer(sequences, dicts):
         encoded_sequences.append(encoded_sub_sequence)
     return encoded_sequences
 
+
 encoded_train_X = tokenizer(train_X, word2int)
 encoded_train_Y = tokenizer(train_Y, token2int)
 
@@ -158,11 +159,12 @@ test_X = padded_test_X = pad_sequences(encoded_test_X, maxlen=MAX_SEQ_LENGTH, pa
 test_Y = padded_test_Y = pad_sequences(encoded_test_Y, maxlen=MAX_SEQ_LENGTH, padding="pre", truncating="post")
 
 padded_samples = {"train_X": train_X, "train_Y": train_Y, "validation_X": validation_X, "validation_Y": validation_Y,
-                  "test_X": test_X, "test_Y": test_Y, "MAX_SEQ_LENGTH": 100}
+                  "test_X": test_X, "test_Y": test_Y, "MAX_SEQ_LENGTH": 100, "int2token": int2token,
+                  "int2word": int2word}
 
 if not os.path.exists('PaddedData/'):
     print('MAKING DIRECTORY PaddedData/ to save pickled padded samples')
     os.makedirs('PaddedData/')
 
 with open('PaddedData/padded_samples.pkl', 'wb') as f:
-    pickle.dump(pickled_data, f)
+    pickle.dump(padded_samples, f)
