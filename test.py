@@ -57,7 +57,7 @@ VOCABULARY_SIZE = train_VOCABULARY_SIZE
 EMBEDDING_SIZE = 300
 embedding_weights = V2
 batch_size = 32
-epoch = 5000
+epoch = 20
 
 print("TRAINING DATA")
 print('Shape of input sequences: {}'.format(train_X.shape))
@@ -75,6 +75,8 @@ optimizer_list = ["SGD", "RMSprop", "Adagrad", "Adadelta", "Adam", "Adamax", "Na
 loss_functions = ["mean_squared_error", "mean_absolute_error", "mean_absolute_percentage_error",
                  "mean_squared_logarithmic_error", "squared_hinge",
                  "hinge", "categorical_hinge", "logcosh"]
+train_Y = to_categorical(train_Y)
+validation_Y = to_categorical(validation_Y)
 # Train Bidirectional_LSTM_Model
 time = 0
 for optimizer in optimizer_list:

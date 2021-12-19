@@ -11,6 +11,8 @@ from sklearn.metrics import classification_report, f1_score, confusion_matrix, a
 import numpy as np
 import os
 import time
+from sklearn.metrics import plot_confusion_matrix
+import seaborn as sns
 
 
 class POSTaggingModel:
@@ -156,6 +158,13 @@ class POSTaggingModel:
         #                validation_data=(self.validation_X, self.validation_Y))
         self.stop_time = time.asctime( time.localtime(time.time()) )
         self.model.save(filepath=self.file_path)
+        plt.plot(self.model.history.history['acc'])
+        plt.plot(self.model.history.history['val_acc'])
+        plt.title('model accuracy')
+        plt.ylabel('accuracy')
+        plt.xlabel('epoch')
+        plt.legend(['train', 'test'], loc="lower right")
+        plt.show()
 
 
     def evaluateModel(self, test_X, test_Y):
@@ -184,7 +193,19 @@ class POSTaggingModel:
         train_info = "The accuracy of model: " + str(model_accuracy_score) + "\n" + "The F1 score of model: " + str(model_f1_score) + "\n" + "The recall score of model: " + str(model_recall_score) + "\n"
         model_report = str(classification_report(test_Y, predict_result, target_names=None, sample_weight=None)) + "\n"
         time = "Start at: " + str(self.start_time) + "        Stop at: " + str(self.stop_time) + "\n"
-        total_report = model_info + train_info + model_report + time
+
+        matrix = confusion_matrix(test_Y, predict_result)
+        plt.figure(figsize=(46, 46))
+        sns.heatmap(matrix, annot=True)
+        plt.title('Confusion Matrix')
+        plt.ylabel('Actal Values')
+        plt.xlabel('Predicted Values')
+        plt.show()
+        str_matrix = "\n"
+        for row in matrix:
+            str_matrix += str(row) + "\n"
+        total_report = model_info + train_info + model_report + time + '\n Confusion Matrix: \n' + str_matrix
+
         with open(self.report_path, 'w') as f:
             print("Saving report")
             f.write(total_report)

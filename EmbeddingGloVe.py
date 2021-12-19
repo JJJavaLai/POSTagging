@@ -46,11 +46,11 @@ print("V2 = V1 + OOV1, shape of V2: {} \n".format(embedding_weights_V2.shape))
 OOV2_counters = 1
 V3 = {}
 for word in validation_words:
-    if word not in V1.keys():
+    if word not in V2.keys():
         OOV2_counters += 1
         V3[word] = np.random.uniform(size=(1, EMBEDDING_DIMENSION))
     else:
-        V3[word] = V1[word]
+        V3[word] = V2[word]
 print("Find {} words in OOV2".format(OOV2_counters))
 embedding_weights_V3 = get_embedding_weights(V3)
 print("V3 = V1 + OOV1 + OOV2, shape of V3: {} \n".format(embedding_weights_V3.shape))
@@ -58,11 +58,11 @@ print("V3 = V1 + OOV1 + OOV2, shape of V3: {} \n".format(embedding_weights_V3.sh
 OOV3_counters = 1
 V4 = {}
 for word in test_words:
-    if word not in V1.keys():
+    if word not in V3.keys():
         OOV3_counters += 1
         V4[word] = np.random.uniform(size=(1, EMBEDDING_DIMENSION))
     else:
-        V4[word] = V1[word]
+        V4[word] = V3[word]
 print("Find {} words in OOV3".format(OOV3_counters))
 embedding_weights_V4 = get_embedding_weights(V4)
 print("V4 = V1 + OOV1 + OOV2 + OOV3, shape of V4: {} \n".format(embedding_weights_V4.shape))
