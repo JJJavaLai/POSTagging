@@ -72,29 +72,6 @@ encoded_validation_Y = tokenizer(validation_Y, token2int)
 encoded_test_X = tokenizer(test_X, word2int)
 encoded_test_Y = tokenizer(test_Y, token2int)
 
-# train_word_tokenizer = Tokenizer()
-# train_word_tokenizer.fit_on_texts(train_X)
-# encoded_train_X = train_word_tokenizer.texts_to_sequences(train_X)
-#
-# train_token_tokenizer = Tokenizer()
-# train_token_tokenizer.fit_on_texts(total_Y)
-# encoded_train_Y = train_token_tokenizer.texts_to_sequences(train_Y)
-
-# validation_word_tokenizer = Tokenizer()
-# validation_word_tokenizer.fit_on_texts(validation_X)
-# encoded_validation_X = validation_word_tokenizer.texts_to_sequences(validation_X)
-#
-# validation_token_tokenizer = Tokenizer()
-# validation_token_tokenizer.fit_on_texts(validation_Y)
-# encoded_validation_Y = validation_token_tokenizer.texts_to_sequences(validation_Y)
-
-# test_word_tokenizer = Tokenizer()
-# test_word_tokenizer.fit_on_texts(test_X)
-# encoded_test_X = test_word_tokenizer.texts_to_sequences(test_X)
-#
-# test_token_tokenizer = Tokenizer()
-# test_token_tokenizer.fit_on_texts(test_Y)
-# encoded_test_Y = test_token_tokenizer.texts_to_sequences(test_Y)
 
 print("Train sample \n", "-" * 50, "\n")
 print('X: ', train_X[0], '\n')
