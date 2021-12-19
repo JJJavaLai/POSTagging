@@ -58,7 +58,7 @@ VOCABULARY_SIZE = train_VOCABULARY_SIZE
 EMBEDDING_SIZE = 300
 embedding_weights = V2
 batch_size = 32
-epoch = 20
+epoch = 2
 train_Y = to_categorical(train_Y)
 validation_Y = to_categorical(validation_Y)
 
@@ -74,21 +74,44 @@ print("TESTING DATA")
 print('Shape of input sequences: {}'.format(test_X.shape))
 print('Shape of output sequences: {}'.format(test_Y.shape))
 
+# Train Bidirectional_LSTM_Model
+name = "Bidirectional_LSTM_Model_"
+Bidirectional_LSTM_Model = POSTaggingModel(NUM_CLASSES, VOCABULARY_SIZE, EMBEDDING_SIZE, MAX_SEQ_LENGTH,
+                                                   train_X,
+                                                   train_Y, validation_X, validation_Y, embedding_weights, batch_size,
+                                                   epoch, name)
+Bidirectional_LSTM_Model.buildModel("Bidirectional LSTM Model")
+Bidirectional_LSTM_Model.fitModel()
+Bidirectional_LSTM_Model.evaluateModel(test_X, test_Y)
 
-# Bidirectional_LSTM_Model = POSTaggingModel(NUM_CLASSES, VOCABULARY_SIZE, EMBEDDING_SIZE, MAX_SEQ_LENGTH, train_X,
-#                         train_Y, validation_X, validation_Y, embedding_weights, batch_size, epoch)
-# Bidirectional_LSTM_Model.buildModel("Bidirectional LSTM Model")
-# Bidirectional_LSTM_Model.fitModel()
-# Bidirectional_LSTM_Model.evaluateModel(test_X, test_Y)
+# Train Gru_Model
+name = "Gru_Model"
+Gru_Model = POSTaggingModel(NUM_CLASSES, VOCABULARY_SIZE, EMBEDDING_SIZE, MAX_SEQ_LENGTH, train_X,
+                                    train_Y, validation_X, validation_Y, embedding_weights, batch_size, epoch)
+Gru_Model.buildModel("GRU Model")
+Gru_Model.fitModel()
+Gru_Model.evaluateModel(test_X, test_Y)
 
-# Gru_Model = POSTaggingModel(NUM_CLASSES, VOCABULARY_SIZE, EMBEDDING_SIZE, MAX_SEQ_LENGTH, train_X,
-#                         train_Y, validation_X, validation_Y, embedding_weights, batch_size, epoch)
-# Gru_Model.buildModel("Bidirectional LSTM Model")
-# Gru_Model.fitModel()
-# Gru_Model.evaluateModel(test_X, test_Y)
-
+# Train LSTM_Model
+name = "LSTM_Model"
 LSTM_Model = POSTaggingModel(NUM_CLASSES, VOCABULARY_SIZE, EMBEDDING_SIZE, MAX_SEQ_LENGTH, train_X,
-                        train_Y, validation_X, validation_Y, embedding_weights, batch_size, epoch)
+                                     train_Y, validation_X, validation_Y, embedding_weights, batch_size, epoch)
 LSTM_Model.buildModel("LSTM Model")
 LSTM_Model.fitModel()
 LSTM_Model.evaluateModel(test_X, test_Y)
+
+# Train LSTM_2_Dense_Model
+name = "LSTM_2_Dense_Model"
+LSTM_2_Dense_Model = POSTaggingModel(NUM_CLASSES, VOCABULARY_SIZE, EMBEDDING_SIZE, MAX_SEQ_LENGTH, train_X,
+                                             train_Y, validation_X, validation_Y, embedding_weights, batch_size, epoch)
+LSTM_2_Dense_Model.buildModel("Bidirectional LSTM Model with 2 Dense")
+LSTM_2_Dense_Model.fitModel()
+LSTM_2_Dense_Model.evaluateModel(test_X, test_Y)
+
+# Train B2_LSTM_Model
+name = "B2_LSTM_Model"
+B2_LSTM_Model = POSTaggingModel(NUM_CLASSES, VOCABULARY_SIZE, EMBEDDING_SIZE, MAX_SEQ_LENGTH, train_X,
+                                        train_Y, validation_X, validation_Y, embedding_weights, batch_size, epoch)
+B2_LSTM_Model.buildModel("2 LSTM Model")
+B2_LSTM_Model.fitModel()
+B2_LSTM_Model.evaluateModel(test_X, test_Y)
