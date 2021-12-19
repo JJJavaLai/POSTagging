@@ -5,6 +5,7 @@ from keras.layers import TimeDistributed
 from keras.layers import LSTM, GRU, Bidirectional, SimpleRNN, RNN
 from keras.models import Model
 from matplotlib import pyplot as plt
+import keras
 from keras.utils.np_utils import to_categorical
 from sklearn.metrics import classification_report, f1_score, confusion_matrix, accuracy_score, recall_score
 import numpy as np
@@ -14,7 +15,7 @@ import time
 
 class POSTaggingModel:
     def __init__(self, N_TOKENS, VOCABULARY_SIZE, EMBEDDING_SIZE, MAX_SEQ_LENGTH, train_X, train_Y,
-                 validation_X, validation_Y, embedding_weights, batch_size, epoch, name):
+                 validation_X, validation_Y, embedding_weights, batch_size, epoch, name, loss, opt):
         self.N_TOKENS = N_TOKENS
         self.VOCABULARY_SIZE = VOCABULARY_SIZE
         self.EMBEDDING_SIZE = EMBEDDING_SIZE
@@ -30,6 +31,8 @@ class POSTaggingModel:
                              "Bidirectional LSTM Model with 2 Dense", "2 LSTM Model"]
         self.model = Sequential()
         self.name = name
+        self.loss = loss
+        self.opt = opt
         self.file_path = "Models/" + self.name + ".h5"
         self.report_path = "Model Report/" + self.name + " report.txt"
 
@@ -61,8 +64,8 @@ class POSTaggingModel:
         self.model.add(GRU(64, return_sequences=True))
         self.model.add(TimeDistributed(Dense(self.N_TOKENS, activation='softmax')))
 
-        self.model.compile(loss='categorical_crossentropy',
-                           optimizer='adam',
+        self.model.compile(loss=self.loss,
+                           optimizer=self.opt,
                            metrics=['acc'])
 
         self.model.summary()
@@ -139,11 +142,19 @@ class POSTaggingModel:
             self.__construct_bidirectional_LSTM_with_2_LSTM_model()
 
     def fitModel(self):
-        self.start_time = time.asctime( time.localtime(time.time()) )
+        early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', min_delta=0.001,
+                                                       patience=15, verbose=0, mode='auto',
+                                                       baseline=None, restore_best_weights=False)
+
         self.model.fit(self.train_X, self.train_Y,
                        batch_size=self.batch_size, epochs=self.epoch,
-                       validation_data=(self.validation_X, self.validation_Y))
-        self.stop_time = localtime = time.asctime( time.localtime(time.time()) )
+                       validation_data=(self.validation_X, self.validation_Y),
+                                      callbacks=[early_stopping])
+        self.start_time = time.asctime( time.localtime(time.time()) )
+        # self.model.fit(self.train_X, self.train_Y,
+        #                batch_size=self.batch_size, epochs=self.epoch,
+        #                validation_data=(self.validation_X, self.validation_Y))
+        self.stop_time = time.asctime( time.localtime(time.time()) )
         self.model.save(filepath=self.file_path)
 
 
@@ -168,9 +179,8 @@ class POSTaggingModel:
         if not os.path.exists('Model Report/'):
             print('MAKING DIRECTORY Model Report/ to save Model Report')
             os.makedirs('Model Report/')
-        a = str(classification_report(test_Y, predict_result, target_names=None, sample_weight=None))
         model_info = "Model Name: " + self.name + "\n" + "Epoch: " + str(self.epoch) + "    Batch Size:" + str(
-            self.batch_size) + "\n"
+            self.batch_size) + "\n" + "Loss Function: " + self.loss + "             Optimizer: " + self.opt + "\n"
         train_info = "The accuracy of model: " + str(model_accuracy_score) + "\n" + "The F1 score of model: " + str(model_f1_score) + "\n" + "The recall score of model: " + str(model_recall_score) + "\n"
         model_report = str(classification_report(test_Y, predict_result, target_names=None, sample_weight=None)) + "\n"
         time = "Start at: " + str(self.start_time) + "        Stop at: " + str(self.stop_time) + "\n"

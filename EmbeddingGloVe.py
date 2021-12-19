@@ -29,7 +29,6 @@ def get_embedding_weights(vocabulary):
     return embedding_weights
 
 
-
 print("Original length of GloVe vocabulary: {} \n".format(len(V1)))
 OOV1_counters = 1
 train_vocabulary_size = len(train_words)
@@ -47,11 +46,11 @@ print("V2 = V1 + OOV1, shape of V2: {} \n".format(embedding_weights_V2.shape))
 OOV2_counters = 1
 V3 = {}
 for word in validation_words:
-    if word not in V2.keys():
+    if word not in V1.keys():
         OOV2_counters += 1
         V3[word] = np.random.uniform(size=(1, EMBEDDING_DIMENSION))
     else:
-        V3[word] = V2[word]
+        V3[word] = V1[word]
 print("Find {} words in OOV2".format(OOV2_counters))
 embedding_weights_V3 = get_embedding_weights(V3)
 print("V3 = V1 + OOV1 + OOV2, shape of V3: {} \n".format(embedding_weights_V3.shape))
@@ -59,11 +58,11 @@ print("V3 = V1 + OOV1 + OOV2, shape of V3: {} \n".format(embedding_weights_V3.sh
 OOV3_counters = 1
 V4 = {}
 for word in test_words:
-    if word not in V3.keys():
+    if word not in V1.keys():
         OOV3_counters += 1
         V4[word] = np.random.uniform(size=(1, EMBEDDING_DIMENSION))
     else:
-        V4[word] = V3[word]
+        V4[word] = V1[word]
 print("Find {} words in OOV3".format(OOV3_counters))
 embedding_weights_V4 = get_embedding_weights(V4)
 print("V4 = V1 + OOV1 + OOV2 + OOV3, shape of V4: {} \n".format(embedding_weights_V4.shape))
@@ -80,4 +79,3 @@ with open('PickledData/V3.pkl', 'wb') as f:
 
 with open('PickledData/V4.pkl', 'wb') as f:
     pickle.dump(embedding_weights_V4, f)
-
